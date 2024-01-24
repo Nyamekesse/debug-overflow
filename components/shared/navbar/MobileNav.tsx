@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Sheet,
@@ -9,9 +10,39 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignedOut } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
+import { sidebarLinks } from "@/constants";
+import { usePathname } from "next/navigation";
 
 const NavContent = () => {
-  return <h1>Nav Content</h1>;
+  const pathName = usePathname();
+  return (
+    <section className="flex h-full flex-col gap-6 pt-16 ">
+      {sidebarLinks.map((link) => {
+        const isActive =
+          (pathName.includes(link.route) && link.route.length > 1) ||
+          pathName === link.route;
+        return (
+          <SheetClose asChild key={link.route}>
+            <Link
+              href={link.route}
+              className={`${isActive ? "primary-gradient rounded-lg text-light-900" : "text-dark300_light900"} flex items-center justify-start gap-4 bg-transparent p-4`}
+            >
+              <Image
+                src={link.imgURL}
+                alt={link.label}
+                width={20}
+                height={20}
+                className={`${isActive ? "" : "invert-colors"}`}
+              />
+              <p className={`${isActive ? "base-bold" : "base-medium"}`}>
+                {link.label}
+              </p>
+            </Link>
+          </SheetClose>
+        );
+      })}
+    </section>
+  );
 };
 
 const MobileNav = () => {
@@ -38,7 +69,7 @@ const MobileNav = () => {
             alt="Debug Flow"
           />
           <p className="h2-bold text-dark100_light900 font-spaceGrotesk">
-            Debug <span className="text-primary-500">Overflow</span>{" "}
+            Debug <span className="text-primary-500">Overflow</span>
           </p>
         </Link>
         <div>
