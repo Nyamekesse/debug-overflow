@@ -3,18 +3,18 @@ import Link from "next/link";
 import React from "react";
 import RenderTags from "./RenderTags";
 const hotQuestions = [
-  { _id: 1, title: "How do I use express as a custom server for Next JS" },
-  { _id: 2, title: "How perfectly center a div in tailwind css" },
-  { _id: 3, title: "Best practices for data fetching in Next JS." },
-  { _id: 4, title: "Redux toolkit not updating state as expected." },
+  { _id: "1", title: "How do I use express as a custom server for Next JS" },
+  { _id: "2", title: "How perfectly center a div in tailwind css" },
+  { _id: "3", title: "Best practices for data fetching in Next JS." },
+  { _id: "4", title: "Redux toolkit not updating state as expected." },
 ];
 
 const popularTags = [
-  { _id: 1, name: "javascript", totalQuestions: 5 },
-  { _id: 2, name: "next", totalQuestions: 3 },
-  { _id: 3, name: "react", totalQuestions: 4 },
-  { _id: 4, name: "vue", totalQuestions: 2 },
-  { _id: 5, name: "redux", totalQuestions: 6 },
+  { _id: "1", name: "javascript", totalQuestions: 5 },
+  { _id: "2", name: "next", totalQuestions: 3 },
+  { _id: "3", name: "react", totalQuestions: 4 },
+  { _id: "4", name: "vue", totalQuestions: 2 },
+  { _id: "5", name: "redux", totalQuestions: 6 },
 ];
 
 const RightSidebar = () => {
