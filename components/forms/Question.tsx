@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,6 +26,7 @@ interface Props {
 }
 
 const Question = ({ type, mongoUserId, questionDetails }: Props) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
 
   const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -38,7 +39,18 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
   });
 
   function onSubmit(values: z.infer<typeof QuestionsSchema>) {
-    console.log(values);
+    setIsSubmitting(true);
+    try {
+      if (type === "Edit") {
+        console.log("hi");
+      } else {
+        console.log("error");
+      }
+    } catch (error) {
+      console.error("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const handleTagRemove = (tag: string, field: any) => {
@@ -203,7 +215,17 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button
+          type="submit"
+          className="primary-gradient w-fit !text-light-900"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>{type === "Edit" ? "Editing..." : "Posting..."}</>
+          ) : (
+            <>{type === "Edit" ? "Edit Question" : "Ask a Question"}</>
+          )}
+        </Button>
       </form>
     </Form>
   );
