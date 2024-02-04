@@ -1,9 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { Editor } from "@tinymce/tinymce-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,9 +11,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { QuestionsSchema } from "../../lib/validations.ts";
-import { Badge } from "@/components/ui/badge";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Editor } from "@tinymce/tinymce-react";
 import Image from "next/image";
+import React, { useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { QuestionsSchema } from "../../lib/validations";
 
 interface Props {
   type: string;
@@ -25,7 +25,7 @@ interface Props {
   questionDetails?: string;
 }
 
-const Question = ({ type, mongoUserId, questionDetails }: Props) => {
+const Question = ({ type }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
 
@@ -125,6 +125,7 @@ const Question = ({ type, mongoUserId, questionDetails }: Props) => {
               <FormControl className="mt-3.5">
                 <Editor
                   apiKey={process.env.NEXT_PUBLIC_TINY_EDITOR_API_KEY}
+                  // @ts-ignore
                   onInit={(evt, editor) => (editorRef.current = editor)}
                   initialValue=""
                   init={{
