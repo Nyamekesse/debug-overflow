@@ -15,6 +15,7 @@ import { createQuestion } from "@/lib/actions/question.action";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Editor } from "@tinymce/tinymce-react";
 import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -26,9 +27,11 @@ interface Props {
   questionDetails?: string;
 }
 
-const Question = ({ type }: Props) => {
+const Question = ({ mongoUserId, type }: Props) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
+  const router = useRouter();
+  const pathName = usePathname();
 
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
@@ -41,7 +44,13 @@ const Question = ({ type }: Props) => {
 
   async function onSubmit(values: z.infer<typeof QuestionsSchema>) {
     setIsSubmitting(true);
-    await createQuestion({});
+    await createQuestion({
+      title: values.title,
+      content: values.explanation,
+      tags: values.tags,
+      author: JSON.parse(mongoUserId),
+    });
+    router.push("/");
     try {
       if (type === "Edit") {
         console.log("hi");
