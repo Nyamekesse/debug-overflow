@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getFormattedNumber, getTimestamp } from "../../lib/utils";
+import { getFormattedNumber, getTimestamp } from "@/lib/utils";
 import Metric from "../shared/Metric";
 import RenderTag from "../shared/RenderTags";
 
@@ -13,6 +13,7 @@ interface Props {
   answers: Array<object>;
   createdAt: Date;
 }
+
 const QuestionCard = ({
   _id,
   title,
