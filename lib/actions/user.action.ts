@@ -7,15 +7,15 @@ import { connectToDatabase } from "../db.connection";
 import {
   CreateUserParams,
   DeleteUserParams,
+  GetAllUsersParams,
   UpdateUserParams,
 } from "./shared.types";
 
 export async function getUserById(params: any) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { userId } = params;
-    const user = await User.findOne({ clerkId: userId });
-    return user;
+    return await User.findOne({ clerkId: userId });
   } catch (error) {
     console.log("an error occurred", error);
   }
@@ -23,9 +23,8 @@ export async function getUserById(params: any) {
 
 export async function createUser(userData: CreateUserParams) {
   try {
-    connectToDatabase();
-    const newUser = await User.create(userData);
-    return newUser;
+    await connectToDatabase();
+    return await User.create(userData);
   } catch (error) {
     console.log("an error occurred", error);
   }
@@ -45,7 +44,7 @@ export async function updateUser(params: UpdateUserParams) {
 
 export async function deleteUser(params: DeleteUserParams) {
   try {
-    connectToDatabase();
+    await connectToDatabase();
     const { clerkId } = params;
     const user = await User.findOneAndDelete({ clerkId });
     if (!user) {
@@ -57,9 +56,20 @@ export async function deleteUser(params: DeleteUserParams) {
 
     await Question.deleteMany({ author: user._id });
 
-    const deletedUser = await User.findByIdAndDelete(user._id);
-    return deletedUser;
+    return await User.findByIdAndDelete(user._id);
   } catch (error) {
     console.log("an error occurred", error);
+  }
+}
+
+export async function getAllUsers(params: GetAllUsersParams) {
+  try {
+    await connectToDatabase();
+    // const { page = 1, pageSize = 20, searchQuery, filter } = params;
+    const users = await User.find({}).sort({ createdAt: -1 });
+    return { users };
+  } catch (error) {
+    console.log("an error occurred", error);
+    throw error;
   }
 }
