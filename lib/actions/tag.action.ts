@@ -9,7 +9,7 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     await connectToDatabase();
     const { userId } = params;
     const user = await User.findById(userId);
-    if (!user) throw new Error("User was found");
+    if (!user) throw new Error("User was not found");
     return [
       { _id: "1", name: "tag1" },
       { _id: "2", name: "tag2" },

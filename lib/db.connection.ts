@@ -6,7 +6,7 @@ export const connectToDatabase = async () => {
   mongoose.set("strictQuery", true);
 
   if (!process.env.MONGODB_URL) return console.log("missing mongo db url");
-  if (isConnected) console.log("Mongo DB Connected");
+  if (isConnected) console.log("mongo db is connected");
 
   try {
     await mongoose.connect(process.env.MONGODB_URL, {
