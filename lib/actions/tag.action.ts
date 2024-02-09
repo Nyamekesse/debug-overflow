@@ -1,8 +1,12 @@
 "use server";
 
-import { GetTopInteractedTagsParams } from "@/lib/actions/shared.types";
+import {
+  GetAllTagsParams,
+  GetTopInteractedTagsParams,
+} from "@/lib/actions/shared.types";
 import { connectToDatabase } from "@/lib/db.connection";
 import User from "@/database/user.model";
+import Tag from "@/database/tag.model";
 
 export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
   try {
@@ -19,4 +23,14 @@ export async function getTopInteractedTags(params: GetTopInteractedTagsParams) {
     console.log("an error occurred", error);
     throw error;
   }
+}
+
+export async function getAllTags(params: GetAllTagsParams) {
+    try {
+        const tags = await Tag.find({})
+        return {tags}
+    } catch (error) {
+        console.log("an error occurred", error);
+        throw error;
+    }
 }
