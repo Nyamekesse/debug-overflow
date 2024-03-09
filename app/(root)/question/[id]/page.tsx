@@ -1,3 +1,4 @@
+import Answer from '@/components/forms/Answer';
 import Metric from '@/components/shared/Metric';
 import ParseHtml from '@/components/shared/ParseHTML';
 import RenderTags from '@/components/shared/RenderTags';
@@ -49,6 +50,7 @@ async function Page({ params, searchParams }) {
           <RenderTags key={tag._id} _id={tag._id} name={tag.name} showCount={false} />
         ))}
       </div>
+      <Answer />
     </>
   );
 }
