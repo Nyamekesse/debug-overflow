@@ -1,4 +1,5 @@
 import Answer from '@/components/forms/Answer';
+import AllAnswers from '@/components/shared/AllAnswers';
 import Metric from '@/components/shared/Metric';
 import ParseHtml from '@/components/shared/ParseHTML';
 import RenderTags from '@/components/shared/RenderTags';
@@ -10,12 +11,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 async function Page({ params, searchParams }) {
-  const result = await getQuestionById({ questionId: params.id });
   const { userId: clerkId } = auth();
   let mongoUser;
   if (clerkId) {
     mongoUser = await getUserById({ userId: clerkId });
   }
+  const result = await getQuestionById({ questionId: params.id });
+  if (!result) return null;
   return (
     <>
       <div className={'flex-start w-full flex-col'}>
@@ -57,6 +59,13 @@ async function Page({ params, searchParams }) {
           <RenderTags key={tag._id} _id={tag._id} name={tag.name} showCount={false} />
         ))}
       </div>
+      <AllAnswers
+        questionId={result._id}
+        userId={mongoUser._id}
+        totalAnswers={result.answers.length}
+        filter={searchParams?.filter}
+        page={searchParams?.page ? +searchParams.page : 1}
+      />
       <Answer question={result.content} questionId={JSON.stringify(result._id)} authorId={JSON.stringify(mongoUser._id)} />
     </>
   );
