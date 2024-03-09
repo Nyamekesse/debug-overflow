@@ -3,12 +3,19 @@ import Metric from '@/components/shared/Metric';
 import ParseHtml from '@/components/shared/ParseHTML';
 import RenderTags from '@/components/shared/RenderTags';
 import { getQuestionById } from '@/lib/actions/question.action';
+import { getUserById } from '@/lib/actions/user.action';
 import { getFormattedNumber, getTimestamp } from '@/lib/utils';
+import { auth } from '@clerk/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
 
 async function Page({ params, searchParams }) {
   const result = await getQuestionById({ questionId: params.id });
+  const { userId: clerkId } = auth();
+  let mongoUser;
+  if (clerkId) {
+    mongoUser = await getUserById({ userId: clerkId });
+  }
   return (
     <>
       <div className={'flex-start w-full flex-col'}>
@@ -50,7 +57,7 @@ async function Page({ params, searchParams }) {
           <RenderTags key={tag._id} _id={tag._id} name={tag.name} showCount={false} />
         ))}
       </div>
-      <Answer />
+      <Answer question={result.content} questionId={JSON.stringify(result._id)} authorId={JSON.stringify(mongoUser._id)} />
     </>
   );
 }
