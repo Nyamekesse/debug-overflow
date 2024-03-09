@@ -1,5 +1,6 @@
 import Metric from '@/components/shared/Metric';
 import ParseHtml from '@/components/shared/ParseHTML';
+import RenderTags from '@/components/shared/RenderTags';
 import { getQuestionById } from '@/lib/actions/question.action';
 import { getFormattedNumber, getTimestamp } from '@/lib/utils';
 import Image from 'next/image';
@@ -43,6 +44,11 @@ async function Page({ params, searchParams }) {
         />
       </div>
       <ParseHtml data={result.content} />
+      <div className="mt-8 flex flex-wrap gap-2">
+        {result.tags.map((tag: any) => (
+          <RenderTags key={tag._id} _id={tag._id} name={tag.name} showCount={false} />
+        ))}
+      </div>
     </>
   );
 }
