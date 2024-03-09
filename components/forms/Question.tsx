@@ -1,25 +1,18 @@
-"use client";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { createQuestion } from "@/lib/actions/question.action";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Editor } from "@tinymce/tinymce-react";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { QuestionsSchema } from "../../lib/validations";
+'use client';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useTheme } from '@/context/ThemeProvider';
+import { createQuestion } from '@/lib/actions/question.action';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Editor } from '@tinymce/tinymce-react';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { QuestionsSchema } from '../../lib/validations';
 
 interface Props {
   type: string;
@@ -28,6 +21,7 @@ interface Props {
 }
 
 const Question = ({ mongoUserId, type }: Props) => {
+  const { mode } = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const editorRef = useRef(null);
   const router = useRouter();
@@ -36,8 +30,8 @@ const Question = ({ mongoUserId, type }: Props) => {
   const form = useForm<z.infer<typeof QuestionsSchema>>({
     resolver: zodResolver(QuestionsSchema),
     defaultValues: {
-      title: "",
-      explanation: "",
+      title: '',
+      explanation: '',
       tags: [],
     },
   });
@@ -51,15 +45,15 @@ const Question = ({ mongoUserId, type }: Props) => {
       author: JSON.parse(mongoUserId),
       path: pathName,
     });
-    router.push("/");
+    router.push('/');
     try {
-      if (type === "Edit") {
-        console.log("hi");
+      if (type === 'Edit') {
+        console.log('hi');
       } else {
-        console.log("error");
+        console.log('error');
       }
     } catch (error) {
-      console.error("error");
+      console.error('error');
     } finally {
       setIsSubmitting(false);
     }
@@ -67,30 +61,27 @@ const Question = ({ mongoUserId, type }: Props) => {
 
   const handleTagRemove = (tag: string, field: any) => {
     form.setValue(
-      "tags",
-      field.value.filter((t: string) => t !== tag)
+      'tags',
+      field.value.filter((t: string) => t !== tag),
     );
   };
 
-  const handleInputKeydown = (
-    e: React.KeyboardEvent<HTMLInputElement>,
-    field: any
-  ) => {
-    if (e.key === "Enter" && field.name === "tags") {
+  const handleInputKeydown = (e: React.KeyboardEvent<HTMLInputElement>, field: any) => {
+    if (e.key === 'Enter' && field.name === 'tags') {
       e.preventDefault();
       const tagInput = e.target as HTMLInputElement;
       const tagValue = tagInput.value.trim();
-      if (tagValue !== "") {
+      if (tagValue !== '') {
         if (tagValue.length > 15) {
-          return form.setError("tags", {
-            type: "required",
-            message: "Tag must be less than 15 characters.",
+          return form.setError('tags', {
+            type: 'required',
+            message: 'Tag must be less than 15 characters.',
           });
         }
         if (!field.value.includes(tagValue as never)) {
-          form.setValue("tags", [...field.value, tagValue]);
-          tagInput.value = "";
-          form.clearErrors("tags");
+          form.setValue('tags', [...field.value, tagValue]);
+          tagInput.value = '';
+          form.clearErrors('tags');
         }
       } else {
         form.trigger();
@@ -99,10 +90,7 @@ const Question = ({ mongoUserId, type }: Props) => {
   };
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="flex w-full flex-col gap-10"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col gap-10">
         <FormField
           control={form.control}
           name="title"
@@ -118,8 +106,7 @@ const Question = ({ mongoUserId, type }: Props) => {
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Be specific and imagine you&apos;re asking a question to another
-                person.
+                Be specific and imagine you&apos;re asking a question to another person.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -131,8 +118,7 @@ const Question = ({ mongoUserId, type }: Props) => {
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Detail explanation of your problem.{" "}
-                <span className="text-primary-500">*</span>
+                Detail explanation of your problem. <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
                 <Editor
@@ -148,34 +134,33 @@ const Question = ({ mongoUserId, type }: Props) => {
                     height: 350,
                     menubar: false,
                     plugins: [
-                      "advlist",
-                      "autolink",
-                      "lists",
-                      "link",
-                      "image",
-                      "charmap",
-                      "preview",
-                      "anchor",
-                      "searchreplace",
-                      "visualblocks",
-                      "codesample",
-                      "fullscreen",
-                      "insertdatetime",
-                      "media",
-                      "table",
-                      "wordcount",
+                      'advlist',
+                      'autolink',
+                      'lists',
+                      'link',
+                      'image',
+                      'charmap',
+                      'preview',
+                      'anchor',
+                      'searchreplace',
+                      'visualblocks',
+                      'codesample',
+                      'fullscreen',
+                      'insertdatetime',
+                      'media',
+                      'table',
+                      'wordcount',
                     ],
                     toolbar:
-                      "undo redo | " +
-                      "codesample | bold italic forecolor | alignleft aligncenter " +
-                      "alignright alignjustify | bullist numlist | ",
-                    content_style: "body { font-family:Inter; font-size:16px }",
+                      'undo redo | ' + 'codesample | bold italic forecolor | alignleft aligncenter ' + 'alignright alignjustify | bullist numlist | ',
+                    content_style: 'body { font-family:Inter; font-size:16px }',
+                    skin: mode === 'dark' ? 'oxide-dark' : 'oxide',
+                    content_css: mode === 'dark' ? 'dark' : 'light',
                   }}
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Introduce the problem and expand on what you put in the title.
-                Minimum 20 characters.
+                Introduce the problem and expand on what you put in the title. Minimum 20 characters.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -202,14 +187,10 @@ const Question = ({ mongoUserId, type }: Props) => {
                         <Badge
                           key={tag}
                           className="subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize"
-                          onClick={() =>
-                            type !== "Edit"
-                              ? handleTagRemove(tag, field)
-                              : () => {}
-                          }
+                          onClick={() => (type !== 'Edit' ? handleTagRemove(tag, field) : () => {})}
                         >
                           {tag}
-                          {type !== "Edit" && (
+                          {type !== 'Edit' && (
                             <Image
                               src="/assets/icons/close.svg"
                               alt="Close icon"
@@ -225,23 +206,14 @@ const Question = ({ mongoUserId, type }: Props) => {
                 </div>
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Add up to 3 tags to describe what your question is about. You
-                need to press enter to add a tag.
+                Add up to 3 tags to describe what your question is about. You need to press enter to add a tag.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
           )}
         />
-        <Button
-          type="submit"
-          className="primary-gradient w-fit !text-light-900"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <>{type === "Edit" ? "Editing..." : "Posting..."}</>
-          ) : (
-            <>{type === "Edit" ? "Edit Question" : "Ask a Question"}</>
-          )}
+        <Button type="submit" className="primary-gradient w-fit !text-light-900" disabled={isSubmitting}>
+          {isSubmitting ? <>{type === 'Edit' ? 'Editing...' : 'Posting...'}</> : <>{type === 'Edit' ? 'Edit Question' : 'Ask a Question'}</>}
         </Button>
       </form>
     </Form>
