@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 'use server';
 
 import Answer from '@/database/answer.model';

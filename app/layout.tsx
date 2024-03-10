@@ -1,11 +1,10 @@
+import { ThemeProvider } from '@/context/ThemeProvider';
 import { ClerkProvider } from '@clerk/nextjs';
+import type { Metadata } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import React from 'react';
 import '../styles/prism.css';
 import './globals.css';
-// eslint-disable-next-line camelcase
-import { ThemeProvider } from '@/context/ThemeProvider';
-import type { Metadata } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
 
 export const metadata: Metadata = {
   title: 'Debug Overflow',

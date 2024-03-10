@@ -5,7 +5,7 @@ import { downvoteQuestion, upvoteQuestion } from '@/lib/actions/question.action'
 import { UserId, Voting } from '@/lib/actions/shared.types';
 import { getFormattedNumber } from '@/lib/utils';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 interface Props extends UserId, Voting {
   type: string;
@@ -17,7 +17,7 @@ interface Props extends UserId, Voting {
 
 const Votes = ({ type, itemId, userId, upvotes, hasupVoted, downvotes, hasdownVoted, hasSaved }: Props) => {
   const pathName = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
   const handleVote = async (action: string) => {
     if (!userId) return;
 
@@ -37,8 +37,6 @@ const Votes = ({ type, itemId, userId, upvotes, hasupVoted, downvotes, hasdownVo
       } else if (type === 'Answer') {
         await downvoteAnswer({ answerId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
       }
-
-      return;
     }
   };
   const handleSave = () => {};
@@ -54,7 +52,7 @@ const Votes = ({ type, itemId, userId, upvotes, hasupVoted, downvotes, hasdownVo
             alt="vote icon"
             onClick={() => handleVote('upvote')}
           />
-          <div className="flex-center background-light700_dark400 min-w-[18px] p-1 rounded-sm ">
+          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1 ">
             <p className="subtle-medium text-dark400_light900">{getFormattedNumber(upvotes)}</p>
           </div>
         </div>
@@ -67,7 +65,7 @@ const Votes = ({ type, itemId, userId, upvotes, hasupVoted, downvotes, hasdownVo
             alt="vote icon"
             onClick={() => handleVote('downvote')}
           />
-          <div className="flex-center background-light700_dark400 min-w-[18px] p-1 rounded-sm ">
+          <div className="flex-center background-light700_dark400 min-w-[18px] rounded-sm p-1 ">
             <p className="subtle-medium text-dark400_light900">{getFormattedNumber(downvotes)}</p>
           </div>
         </div>

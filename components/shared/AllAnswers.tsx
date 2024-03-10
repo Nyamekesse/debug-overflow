@@ -26,7 +26,7 @@ const AllAnswers = async ({ userId, questionId, totalAnswers, filter, page }: Pr
       </div>
       <div>
         {result?.answers.map((answer: any) => {
-          const showActionButtons = JSON.stringify(userId) === JSON.stringify(answer.author._id);
+          // const showActionButtons = JSON.stringify(userId) === JSON.stringify(answer.author._id);
 
           return (
             <article key={answer._id} className="light-border border-b py-10">
