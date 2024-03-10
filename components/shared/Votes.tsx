@@ -1,5 +1,6 @@
 'use client';
 
+import { downvoteAnswer, upvoteAnswer } from '@/lib/actions/answer.action';
 import { downvoteQuestion, upvoteQuestion } from '@/lib/actions/question.action';
 import { UserId, Voting } from '@/lib/actions/shared.types';
 import { getFormattedNumber } from '@/lib/utils';
@@ -24,7 +25,7 @@ const Votes = ({ type, itemId, userId, upvotes, hasupVoted, downvotes, hasdownVo
       if (type === 'Question') {
         await upvoteQuestion({ questionId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
       } else if (type === 'Answer') {
-        // await upvoteAnswer({ questionId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
+        await upvoteAnswer({ answerId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
       }
 
       return;
@@ -34,7 +35,7 @@ const Votes = ({ type, itemId, userId, upvotes, hasupVoted, downvotes, hasdownVo
       if (type === 'Question') {
         await downvoteQuestion({ questionId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
       } else if (type === 'Answer') {
-        // await downvoteAnswer({ questionId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
+        await downvoteAnswer({ answerId: JSON.parse(itemId), userId: JSON.parse(userId), hasupVoted, hasdownVoted, path: pathName });
       }
 
       return;
