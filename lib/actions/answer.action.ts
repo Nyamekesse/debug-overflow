@@ -5,7 +5,7 @@ import Question from '@/database/question.model';
 import User from '@/database/user.model';
 import { revalidatePath } from 'next/cache';
 import { connectToDatabase } from '../db.connection';
-import { CreateAnswerParams, GetAnswersParams } from './shared.types';
+import { AnswerVoteParams, CreateAnswerParams, GetAnswersParams } from './shared.types';
 
 export async function createAnswer(params: CreateAnswerParams) {
   connectToDatabase();
@@ -47,5 +47,69 @@ export async function getAnswers(params: GetAnswersParams) {
     return { answers };
   } catch (error) {
     console.log(error);
+  }
+}
+
+export async function upvoteAnswer(params: AnswerVoteParams) {
+  try {
+    await connectToDatabase();
+    const { hasdownVoted, answerId, path, userId, hasupVoted } = params;
+    let updateQuery = {};
+
+    if (hasupVoted) {
+      updateQuery = { $pull: { upvotes: userId } };
+    } else if (hasdownVoted) {
+      updateQuery = {
+        $pull: { downvotes: userId },
+        $push: { upvotes: userId },
+      };
+    } else {
+      updateQuery = {
+        $addToSet: { upvotes: userId },
+      };
+    }
+
+    const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, { new: true });
+
+    if (!answer) {
+      throw new Error('Answer not found!');
+    }
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log('an error occurred', error);
+    throw error;
+  }
+}
+
+export async function downvoteAnswer(params: AnswerVoteParams) {
+  try {
+    await connectToDatabase();
+    const { hasdownVoted, answerId, path, userId, hasupVoted } = params;
+    let updateQuery = {};
+
+    if (hasdownVoted) {
+      updateQuery = { $pull: { downvotes: userId } };
+    } else if (hasupVoted) {
+      updateQuery = {
+        $pull: { upvotes: userId },
+        $push: { downvotes: userId },
+      };
+    } else {
+      updateQuery = {
+        $addToSet: { downvotes: userId },
+      };
+    }
+
+    const answer = await Answer.findByIdAndUpdate(answerId, updateQuery, { new: true });
+
+    if (!answer) {
+      throw new Error('Answer not found!');
+    }
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log('an error occurred', error);
+    throw error;
   }
 }
