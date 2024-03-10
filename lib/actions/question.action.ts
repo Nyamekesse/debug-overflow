@@ -1,25 +1,21 @@
-"use server";
+'use server';
 
-import Question from "@/database/question.model";
-import Tag from "@/database/tag.model";
-import User from "@/database/user.model";
-import { revalidatePath } from "next/cache";
-import { connectToDatabase } from "../db.connection";
-import {
-  CreateQuestionParams,
-  GetQuestionByIdParams,
-  GetQuestionsParams,
-} from "./shared.types";
+import Question from '@/database/question.model';
+import Tag from '@/database/tag.model';
+import User from '@/database/user.model';
+import { revalidatePath } from 'next/cache';
+import { connectToDatabase } from '../db.connection';
+import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from './shared.types';
 
 export async function getQuestions(params: GetQuestionsParams) {
   try {
     connectToDatabase();
     const questions = await Question.find({})
       .populate({
-        path: "tags",
+        path: 'tags',
         model: Tag,
       })
-      .populate({ path: "author", model: User })
+      .populate({ path: 'author', model: User })
       .sort({ createdAt: -1 });
     return { questions };
   } catch (error) {
@@ -42,7 +38,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     const tagDocuments = [];
     for (const tag of tags) {
       const existingTag = await Tag.findOneAndUpdate(
-        { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+        { name: { $regex: new RegExp(`^${tag}$`, 'i') } },
         { $setOnInsert: { name: tag }, $push: { questions: question._id } },
         { upsert: true, new: true },
       );
@@ -54,7 +50,7 @@ export async function createQuestion(params: CreateQuestionParams) {
     });
     revalidatePath(path);
   } catch (error) {
-    console.log("an error occurred", error);
+    console.log('an error occurred', error);
   }
 }
 
@@ -62,16 +58,78 @@ export async function getQuestionById(params: GetQuestionByIdParams) {
   try {
     await connectToDatabase();
     const { questionId } = params;
-    const question = await Question.findById(questionId)
-      .populate({ path: "tags", model: Tag, select: "_id name" })
-      .populate({
-        path: "author",
-        model: User,
-        select: "_id clerkId name picture",
-      });
+    const question = await Question.findById(questionId).populate({ path: 'tags', model: Tag, select: '_id name' }).populate({
+      path: 'author',
+      model: User,
+      select: '_id clerkId name picture',
+    });
     return question;
   } catch (error) {
-    console.log("an error occurred", error);
+    console.log('an error occurred', error);
+    throw error;
+  }
+}
+
+export async function upvoteQuestion(params: QuestionVoteParams) {
+  try {
+    await connectToDatabase();
+    const { hasdownVoted, questionId, path, userId, hasupVoted } = params;
+    let updateQuery = {};
+
+    if (hasupVoted) {
+      updateQuery = { $pull: { upvotes: userId } };
+    } else if (hasdownVoted) {
+      updateQuery = {
+        $pull: { downvotes: userId },
+        $push: { upvotes: userId },
+      };
+    } else {
+      updateQuery = {
+        $addToSet: { upvotes: userId },
+      };
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, { new: true });
+
+    if (!question) {
+      throw new Error('Question not found!');
+    }
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log('an error occurred', error);
+    throw error;
+  }
+}
+
+export async function downvoteQuestion(params: QuestionVoteParams) {
+  try {
+    await connectToDatabase();
+    const { hasdownVoted, questionId, path, userId, hasupVoted } = params;
+    let updateQuery = {};
+
+    if (hasdownVoted) {
+      updateQuery = { $pull: { downvotes: userId } };
+    } else if (hasupVoted) {
+      updateQuery = {
+        $pull: { upvotes: userId },
+        $push: { downvotes: userId },
+      };
+    } else {
+      updateQuery = {
+        $addToSet: { downvotes: userId },
+      };
+    }
+
+    const question = await Question.findByIdAndUpdate(questionId, updateQuery, { new: true });
+
+    if (!question) {
+      throw new Error('Question not found!');
+    }
+
+    revalidatePath(path);
+  } catch (error) {
+    console.log('an error occurred', error);
     throw error;
   }
 }
